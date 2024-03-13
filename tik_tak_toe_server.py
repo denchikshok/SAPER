@@ -59,15 +59,6 @@ RED = (255, 0, 0)
 def highlight_cell(cellX, cellY):
     pygame.draw.rect(surface, RED, (cellX * 200, cellY * 200, 200, 200), 4)
 
-
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    return True  # перезапуск игры
-                elif event.key == pygame.K_ESCAPE:
-                    return False  # выход из игры
-
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
