@@ -51,7 +51,7 @@ def waiting_for_connection():
     conn, addr = sock.accept()  # ждет соединение, яв-ся методом блокировки основного потока
     print('client is connected')
     connection_established = True
-    receive_data(conn)
+    receive_data()
 
 
 create_thread(waiting_for_connection)

@@ -26,22 +26,15 @@ PORT = 65432
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect((HOST, PORT))
 
-def show_winner(winner):
-    font = pygame.font.Font(None, 36)
-    text = font.render(f"Player {winner} wins!", True, (255, 0, 0))
-    text_rect = text.get_rect(center=(300, 300))
-    surface.blit(text, text_rect)
-    pygame.display.flip()
 
 def receive_data():
     global turn
     while True:
         data = sock.recv(1024).decode()
         data = data.split('-')
-        if data[0] == 'X':
+        if data[0] == 'winner':
             # Обработка сообщения о победе
-            show_winner(data[1])  # Показать сообщение о победе
-            grid.game_over = True  # Установить флаг конца игры
+            print(data[1])  # Вывод сообщения о победе
         else:
             x, y = int(data[0]), int(data[1])
             if data[2] == 'yourturn':
@@ -51,6 +44,7 @@ def receive_data():
             if grid.get_cell_value(x, y) == 0:
                 grid.set_cell_value(x, y, 'X')
             print(data)
+
 
 create_thread(receive_data)
 
