@@ -55,6 +55,19 @@ player = 'X'
 turn = True
 playing = 'True'
 
+RED = (255, 0, 0)
+def highlight_cell(cellX, cellY):
+    pygame.draw.rect(surface, RED, (cellX * 200, cellY * 200, 200, 200), 4)
+
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    return True  # перезапуск игры
+                elif event.key == pygame.K_ESCAPE:
+                    return False  # выход из игры
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -80,7 +93,7 @@ while running:
                 running = False
 
 
-    surface.fill((0,0,0))
+    surface.fill((255,255,255))
 
     grid.draw(surface)
 

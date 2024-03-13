@@ -83,7 +83,7 @@ while running:
                 running = False
 
     # Отрисовка фона
-    surface.fill((0,0,0))
+    surface.fill((255,255,255))
 
     # Отрисовка сетки
     grid.draw(surface)

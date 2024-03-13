@@ -83,6 +83,7 @@ class Grid:
         if count == 3:
             print(player, 'ПОБЕДИЛ!')
             self.game_over = True
+            return player
         else:
             self.game_over = self.is_grid_full()
 
