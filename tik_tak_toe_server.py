@@ -16,7 +16,7 @@ def create_thread(target): #создает отдельный поток
 
 import socket
 
-HOST = '127.0.0.1'
+HOST = 'localhost'
 PORT = 65432
 connection_established = False
 conn, addr = None, None
@@ -83,5 +83,9 @@ while running:
     surface.fill((0,0,0))
 
     grid.draw(surface)
+
+    pos = pygame.mouse.get_pos()
+    cellX, cellY = pos[0] // 200, pos[1] // 200
+    highlight_cell(cellX, cellY)
 
     pygame.display.flip()

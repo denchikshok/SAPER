@@ -4,7 +4,6 @@ from grid import Grid
 import os
 os.environ['SDL_VIDEO_WINDOW_POS'] = '850, 100' #положение окна относительно экрана
 
-
 surface = pygame.display.set_mode((600, 600))
 pygame.display.set_caption('Krestiki_Noliki')
 
@@ -17,7 +16,7 @@ def create_thread(target): #создает отдельный поток
 
 import socket
 
-HOST = '127.0.0.1'
+HOST = 'localhost'
 PORT = 65432
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -46,6 +45,19 @@ player = 'O'
 turn = False
 playing = 'True'
 
+# Цвета
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GRAY = (200, 200, 200)
+RED = (255, 0, 0)
+
+# Загрузка фонового изображения
+#background_image = pygame.image.load("background.jpg").convert()
+
+# Анимация для подсветки ячеек
+def highlight_cell(cellX, cellY):
+    pygame.draw.rect(surface, RED, (cellX * 200, cellY * 200, 200, 200), 4)
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -70,9 +82,15 @@ while running:
             elif event.key == pygame.K_ESCAPE:
                 running = False
 
-
+    # Отрисовка фона
     surface.fill((0,0,0))
 
+    # Отрисовка сетки
     grid.draw(surface)
+
+    # Подсветка ячеек при наведении мыши
+    pos = pygame.mouse.get_pos()
+    cellX, cellY = pos[0] // 200, pos[1] // 200
+    highlight_cell(cellX, cellY)
 
     pygame.display.flip()
