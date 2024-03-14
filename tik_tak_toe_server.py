@@ -36,14 +36,26 @@ def receive_data():
     while True:
         data = conn.recv(1024).decode()
         data = data.split('-')
-        x, y = int(data[0]), int(data[1])
-        if data[2] == 'yourturn':
-            turn = True
-        if data[3] == 'False':
-            grid.game_over = True
-        if grid.get_cell_value(x, y) == 0:
-            grid.set_cell_value(x, y, 'O')
-        print(data)
+        if data[0] == 'winner':
+            # Обработка сообщения о победе
+            print(data[1])  # Вывод сообщения о победе
+            conn.send(data.encode())  # Отправка сообщения о победителе
+            # Здесь можно дать клиентам время на прочтение сообщения
+            # и выполнение дополнительных действий перед закрытием соединения
+        elif data[0] == 'quit':
+            # Если получено сообщение о завершении игры от клиента
+            break
+        else:
+            x, y = int(data[0]), int(data[1])
+            if data[2] == 'yourturn':
+                turn = True
+            if data[3] == 'False':
+                grid.game_over = True
+            if grid.get_cell_value(x, y) == 0:
+                grid.set_cell_value(x, y, 'O')
+            print(data)
+
+
 
 
 def waiting_for_connection():

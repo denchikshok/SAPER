@@ -1,15 +1,14 @@
 import pygame
 from grid import Grid
 import os
+import time
 
 os.environ['SDL_VIDEO_WINDOW_POS'] = '850, 100'  # положение окна относительно экрана
-
+pygame.init()
 surface = pygame.display.set_mode((600, 600))
 pygame.display.set_caption('Krestiki_Noliki')
 
 import threading
-
-pygame.init()
 
 
 def create_thread(target):  # создает отдельный поток
@@ -33,8 +32,11 @@ def receive_data():
         data = sock.recv(1024).decode()
         data = data.split('-')
         if data[0] == 'winner':
-            # Обработка сообщения о победе
-            print(data[1])  # Вывод сообщения о победе
+            print(data[1])
+            show_message(surface, "Игрок {} победил!".format(data[1]))
+            # Вывод сообщения о победе
+            sock.send('quit'.encode())  # Отправляем сообщение о завершении игры
+            break
         else:
             x, y = int(data[0]), int(data[1])
             if data[2] == 'yourturn':
@@ -55,6 +57,7 @@ player = 'O'
 turn = False
 playing = 'True'
 winner_message_shown = False  # Переменная состояния для отображения сообщения о победе
+game_over = False
 
 # Цвета
 BLACK = (0, 0, 0)
@@ -99,6 +102,8 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+            sock.send('quit'.encode())  # Отправляем сообщение о завершении игры
+            sock.close()
         if event.type == pygame.MOUSEBUTTONDOWN and not grid.game_over:
             if pygame.mouse.get_pressed()[0]:  # 0 означает что нажать можно только лкм
                 if turn and not grid.game_over:
@@ -132,9 +137,11 @@ while running:
     cellX, cellY = pos[0] // 200, pos[1] // 200
     highlight_cell(cellX, cellY)
 
-    # Если игра окончена и сообщение о победе еще не было показано, покажем его
-    if grid.game_over and not winner_message_shown:
-        show_message(surface, "Игрок {} победил!".format(grid.get_winner()))
-        winner_message_shown = True  # Устанавливаем флаг, что сообщение о победе было показано
+    # Если игра окончена и сообщение о победе еще не было показано, покажем е
+    if grid.game_over:
+        if not winner_message_shown:
+            winner_message_shown = True
+            print("Показываем сообщение о победе")
+            show_message(surface, "Игрок {} победил!".format(grid.get_winner()))
 
     pygame.display.flip()
