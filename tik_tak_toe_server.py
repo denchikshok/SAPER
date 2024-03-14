@@ -21,7 +21,7 @@ def create_thread(target):  # создает отдельный поток
 
 import socket
 
-HOST = 'localhost'
+HOST = '192.168.137.1'
 PORT = 65432
 connection_established = False
 conn, addr = None, None

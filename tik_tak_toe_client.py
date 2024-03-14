@@ -19,7 +19,7 @@ def create_thread(target):  # создает отдельный поток
 
 import socket
 # 192.168.137.1
-HOST = 'localhost'
+HOST = '192.168.137.1'
 PORT = 65432
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
