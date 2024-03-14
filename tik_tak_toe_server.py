@@ -36,6 +36,7 @@ def receive_data():
     while True:
         data = conn.recv(1024).decode()
         data = data.split('-')
+        print(data)
         if data[0] == 'winner':
             # Обработка сообщения о победе
             print(data[1])  # Вывод сообщения о победе
@@ -43,8 +44,9 @@ def receive_data():
             # Здесь можно дать клиентам время на прочтение сообщения
             # и выполнение дополнительных действий перед закрытием соединения
         elif data[0] == 'quit':
+            pass
             # Если получено сообщение о завершении игры от клиента
-            break
+            pass
         else:
             x, y = int(data[0]), int(data[1])
             if data[2] == 'yourturn':
@@ -112,8 +114,10 @@ def show_message(surface, message):
 def check_game_status(surface, grid):
     if grid.game_over:
         if grid.get_winner() == 'X':
+            grid = Grid()
             winner_message = "Игрок X выиграл!"
         elif grid.get_winner() == 'O':
+            grid = Grid()
             winner_message = "Игрок O выиграл!"
         else:
             winner_message = "Ничья!"
@@ -142,6 +146,9 @@ while running:
                 grid.clear_grid()
                 grid.game_over = False
                 playing = 'True'
+                send_data = '{}'.format('restart').encode()
+                conn.send(send_data)
+
             elif event.key == pygame.K_ESCAPE:
                 running = False
 

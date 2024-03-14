@@ -18,7 +18,7 @@ def create_thread(target):  # создает отдельный поток
 
 
 import socket
-
+# 192.168.137.1
 HOST = 'localhost'
 PORT = 65432
 
@@ -28,15 +28,24 @@ sock.connect((HOST, PORT))
 
 def receive_data():
     global turn
+    Flag = True
     while True:
         data = sock.recv(1024).decode()
         data = data.split('-')
-        if data[0] == 'winner':
-            print(data[1])
-            show_message(surface, "Игрок {} победил!".format(data[1]))
-            # Вывод сообщения о победе
-            sock.send('quit'.encode())  # Отправляем сообщение о завершении игры
-            break
+        print(data)
+        if data[0] == 'restart':
+            Flag = True
+            grid.clear_grid()
+            grid.game_over = False
+            playing = 'True'
+            winner_message_shown = False  # Сбрасываем флаг отображения сообщения о победе
+
+        elif data[0] == 'winner':
+            if Flag:
+                show_message(surface, "Игрок {} победил!".format(data[1]))
+                # Вывод сообщения о победе
+                sock.send('quit'.encode())  # Отправляем сообщение о завершении игры
+                Flag = False
         else:
             x, y = int(data[0]), int(data[1])
             if data[2] == 'yourturn':
@@ -100,10 +109,7 @@ def show_message(surface, message):
 
 while running:
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-            sock.send('quit'.encode())  # Отправляем сообщение о завершении игры
-            sock.close()
+
         if event.type == pygame.MOUSEBUTTONDOWN and not grid.game_over:
             if pygame.mouse.get_pressed()[0]:  # 0 означает что нажать можно только лкм
                 if turn and not grid.game_over:
@@ -117,14 +123,14 @@ while running:
                     sock.send(send_data)
                     turn = False
 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE and grid.game_over:
-                grid.clear_grid()
-                grid.game_over = False
-                playing = 'True'
-                winner_message_shown = False  # Сбрасываем флаг отображения сообщения о победе
-            elif event.key == pygame.K_ESCAPE:
-                running = False
+        # if event.type == pygame.KEYDOWN:
+        #     if event.key == pygame.K_SPACE and grid.game_over:
+        #         grid.clear_grid()
+        #         grid.game_over = False
+        #         playing = 'True'
+        #         winner_message_shown = False  # Сбрасываем флаг отображения сообщения о победе
+        #     elif event.key == pygame.K_ESCAPE:
+        #         running = False
 
     # Отрисовка фона
     surface.fill((255, 255, 255))
@@ -140,8 +146,6 @@ while running:
     # Если игра окончена и сообщение о победе еще не было показано, покажем е
     if grid.game_over:
         if not winner_message_shown:
-            winner_message_shown = True
-            print("Показываем сообщение о победе")
             show_message(surface, "Игрок {} победил!".format(grid.get_winner()))
 
     pygame.display.flip()
