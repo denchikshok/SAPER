@@ -3,3 +3,5 @@
 
 # Ignore .idea directory
 .idea/
+
+exe/
